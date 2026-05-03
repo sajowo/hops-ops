@@ -29,9 +29,6 @@ Kazda rola ma swoje glowne miejsce pracy w repozytorium. Dzieki temu latwiej spr
 
 ### Analitycy
 
-- Martyna Pasek
-- Patryk Picur
-
 Foldery i pliki:
 
 - `docs/wymagania.md`
@@ -46,11 +43,6 @@ Odpowiedzialnosc:
 - zakres projektu.
 
 ### Projektanci
-
-- Hubert Perkowski
-- Gabriela Wilk
-- Anna Oleszko
-- Radoslaw Rychel
 
 Foldery:
 
@@ -67,10 +59,6 @@ Odpowiedzialnosc:
 
 ### Programisci
 
-- Kacper Saj
-- Bartosz Kawalec
-- Jakub Sikora
-
 Foldery:
 
 - `src/`
@@ -84,11 +72,6 @@ Odpowiedzialnosc:
 Jesli projekt zostanie podzielony na frontend i backend, mozna utworzyc `src/frontend/` oraz `src/backend/`.
 
 ### Testerzy
-
-- Bartek Rybak
-- Kuba Stachowicz
-- Marcin Ossolinski
-- Maksymilian Rak
 
 Foldery i pliki:
 

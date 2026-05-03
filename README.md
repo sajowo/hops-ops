@@ -23,12 +23,27 @@ Repozytorium zespolowe do pracy nad projektem.
 - `test/nazwa-testu` - scenariusze i automatyzacja testow.
 - `release/v1.0` - przygotowanie wersji do oddania.
 
-## Zespol
+## Zespol i foldery odpowiedzialnosci
+
+Kazda rola ma swoje glowne miejsce pracy w repozytorium. Dzieki temu latwiej sprawdzac zmiany i unikac konfliktow.
 
 ### Analitycy
 
 - Martyna Pasek
 - Patryk Picur
+
+Foldery i pliki:
+
+- `docs/wymagania.md`
+- `docs/user-stories.md`
+- `docs/kryteria-akceptacji.md`
+
+Odpowiedzialnosc:
+
+- wymagania,
+- user stories,
+- kryteria akceptacji,
+- zakres projektu.
 
 ### Projektanci
 
@@ -37,11 +52,36 @@ Repozytorium zespolowe do pracy nad projektem.
 - Anna Oleszko
 - Radoslaw Rychel
 
+Foldery:
+
+- `design/makiety/`
+- `design/diagramy/`
+- `assets/`
+
+Odpowiedzialnosc:
+
+- makiety,
+- diagramy,
+- materialy graficzne,
+- opis wygladu aplikacji.
+
 ### Programisci
 
 - Kacper Saj
 - Bartosz Kawalec
 - Jakub Sikora
+
+Foldery:
+
+- `src/`
+
+Odpowiedzialnosc:
+
+- kod aplikacji,
+- konfiguracja techniczna,
+- integracja funkcji.
+
+Jesli projekt zostanie podzielony na frontend i backend, mozna utworzyc `src/frontend/` oraz `src/backend/`.
 
 ### Testerzy
 
@@ -50,3 +90,21 @@ Repozytorium zespolowe do pracy nad projektem.
 - Marcin Ossolinski
 - Maksymilian Rak
 
+Foldery i pliki:
+
+- `tests/`
+- `docs/test-plan.md`
+- `docs/test-cases.md`
+
+Odpowiedzialnosc:
+
+- plan testow,
+- przypadki testowe,
+- testowanie zmian,
+- zglaszanie bledow.
+
+## Zasady pracy w folderach
+
+- Zmiany w cudzym obszarze warto uzgodnic w Pull Request albo Issue.
+- Dokumentacja analityczna powinna byc aktualizowana przed rozpoczeciem wiekszych zadan programistycznych.
+- Testy i przypadki testowe powinny byc dopisywane do funkcji, ktore trafiaja do `develop`.

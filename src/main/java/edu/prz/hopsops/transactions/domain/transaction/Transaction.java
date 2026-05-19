@@ -1,11 +1,9 @@
 package edu.prz.hopsops.transactions.domain.transaction;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import lombok.Data;
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 
 @Entity
 @Data
@@ -18,4 +16,12 @@ public class Transaction {
   TransationType type;
 
   BigDecimal totalAmount;
+
+  CustomerId customerId;
+
+  @OneToMany
+  List<RentalItem> rentalItemList;
+
+  @OneToMany
+  List<SaleItem> saleItemList;
 }

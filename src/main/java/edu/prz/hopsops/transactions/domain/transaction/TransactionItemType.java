@@ -1,7 +1,7 @@
 package edu.prz.hopsops.transactions.domain.transaction;
 
-public enum TransationType {
+public enum TransactionItemType {
 
   SALE,
-  RENT
+  RENTAL
 }

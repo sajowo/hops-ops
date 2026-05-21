@@ -55,3 +55,5 @@ public class EquipmentItem extends BaseEntity {
     status = EquipmentItemStatus.AVAILABLE;
   }
 }
+
+//zmienic nazwe na equipment

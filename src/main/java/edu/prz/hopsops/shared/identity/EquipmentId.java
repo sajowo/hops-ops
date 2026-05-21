@@ -5,6 +5,6 @@ import edu.prz.hopsops.foundation.domain.Identity;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public record EquipmentItemId(@JsonValue Long id) implements Identity {
+public record EquipmentId(@JsonValue Long id) implements Identity {
 
 }

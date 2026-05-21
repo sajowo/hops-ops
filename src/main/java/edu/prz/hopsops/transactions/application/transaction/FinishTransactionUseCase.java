@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class FinishRentalTransactionUseCase {
+public class FinishTransactionUseCase {
 
   final TransactionRepository transactionRepository;
 
@@ -18,15 +18,14 @@ public class FinishRentalTransactionUseCase {
   public Transaction execute(Command command) {
     Transaction transaction = transactionRepository.findById(command.transactionId())
         .orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
-    transaction.finishRental(command.rentalEndDate(), command.additionalFee());
+    transaction.finishTransaction(command.finishedAt(), command.additionalFee());
     return transactionRepository.save(transaction);
   }
 
   public record Command(
       Long transactionId,
-      LocalDate rentalEndDate,
+      LocalDate finishedAt,
       BigDecimal additionalFee
   ) {
   }
 }
-//zorbic finish transation usecase

@@ -1,27 +1,22 @@
-package edu.prz.hopsops.rentaloffers.domain.equipmentitem;
+package edu.prz.hopsops.rentaloffers.domain.reservation;
 
 import edu.prz.hopsops.foundation.domain.BaseEntity;
 import edu.prz.hopsops.shared.identity.CustomerId;
+import edu.prz.hopsops.shared.identity.EquipmentId;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString(exclude = "equipmentItem", callSuper = true)
 public class Reservation extends BaseEntity {
 
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
-  @JoinColumn(name = "equipment_item_id", referencedColumnName = "id", nullable = false)
-  EquipmentItem equipmentItem;
+  @AttributeOverride(name = "id", column = @Column(name = "equipment_id"))
+  EquipmentId equipmentId;
 
   @AttributeOverride(name = "id", column = @Column(name = "customer_id"))
   CustomerId customerId;
@@ -30,14 +25,14 @@ public class Reservation extends BaseEntity {
 
   LocalDate reservedTo;
 
-  static Reservation create(
-      EquipmentItem equipmentItem,
+  public static Reservation create(
+      EquipmentId equipmentId,
       CustomerId customerId,
       LocalDate reservedFrom,
       LocalDate reservedTo
   ) {
-    if (equipmentItem == null) {
-      throw new IllegalArgumentException("Equipment item is required");
+    if (equipmentId == null) {
+      throw new IllegalArgumentException("Equipment id is required");
     }
     if (customerId == null) {
       throw new IllegalArgumentException("Customer id is required");
@@ -50,7 +45,7 @@ public class Reservation extends BaseEntity {
     }
 
     Reservation reservation = new Reservation();
-    reservation.equipmentItem = equipmentItem;
+    reservation.equipmentId = equipmentId;
     reservation.customerId = customerId;
     reservation.reservedFrom = reservedFrom;
     reservation.reservedTo = reservedTo;

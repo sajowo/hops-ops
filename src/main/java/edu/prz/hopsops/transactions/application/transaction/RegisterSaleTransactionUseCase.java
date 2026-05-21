@@ -18,7 +18,8 @@ public class RegisterSaleTransactionUseCase {
 
   final TransactionFactory transactionFactory;
   final TransactionRepository transactionRepository;
-
+//ma dodawac wiele tranzakcji, ale na razie niech dodaje jedna tranzakcje, potem bedziemy
+// przykldka taska (dorobic usulge do tranzakcji) 
   @Transactional
   public Transaction execute(Command command) {
     Transaction transaction = transactionFactory.create(

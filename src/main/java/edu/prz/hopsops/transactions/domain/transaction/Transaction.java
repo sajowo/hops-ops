@@ -2,9 +2,8 @@ package edu.prz.hopsops.transactions.domain.transaction;
 
 import edu.prz.hopsops.foundation.domain.BaseEntity;
 import edu.prz.hopsops.shared.identity.CustomerId;
-import edu.prz.hopsops.shared.identity.EquipmentItemId;
+import edu.prz.hopsops.shared.identity.EquipmentId;
 import edu.prz.hopsops.shared.identity.EquipmentTypeId;
-import edu.prz.hopsops.shared.identity.RentalOfferId;
 import edu.prz.hopsops.shared.identity.SalesOfferId;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
@@ -74,8 +73,7 @@ public class Transaction extends BaseEntity {
   }
 
   public void addRentalItem(
-      RentalOfferId rentalOfferId,
-      EquipmentItemId equipmentItemId,
+      EquipmentId equipmentId,
       LocalDate rentalStartDate,
       LocalDate plannedRentalEndDate,
       BigDecimal unitPrice
@@ -83,8 +81,7 @@ public class Transaction extends BaseEntity {
     ensureDraftOrInProgress();
     items.add(TransactionItem.rental(
         this,
-        rentalOfferId,
-        equipmentItemId,
+        equipmentId,
         rentalStartDate,
         plannedRentalEndDate,
         unitPrice
@@ -99,7 +96,7 @@ public class Transaction extends BaseEntity {
     status = containsRentalItem() ? TransactionStatus.IN_PROGRESS : TransactionStatus.COMPLETED;
   }
 
-  public void finishRental(LocalDate rentalEndDate, BigDecimal additionalFee) {
+  public void finishTransaction(LocalDate rentalEndDate, BigDecimal additionalFee) {
     if (!containsRentalItem()) {
       throw new IllegalStateException("Only rental transaction can be finished");
     }
@@ -110,7 +107,7 @@ public class Transaction extends BaseEntity {
     this.additionalFee = additionalFee == null ? BigDecimal.ZERO : additionalFee;
     items.stream()
         .filter(TransactionItem::isRental)
-        .forEach(item -> item.finishRental(rentalEndDate));
+        .forEach(item -> item.finish(rentalEndDate));
     status = TransactionStatus.COMPLETED;
     recalculate();
   }

@@ -4,11 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import edu.prz.hopsops.shared.identity.CustomerId;
-import edu.prz.hopsops.shared.identity.EquipmentItemId;
+import edu.prz.hopsops.shared.identity.EquipmentId;
 import edu.prz.hopsops.shared.identity.EquipmentTypeId;
-import edu.prz.hopsops.shared.identity.RentalOfferId;
 import edu.prz.hopsops.shared.identity.SalesOfferId;
-import edu.prz.hopsops.transactions.application.transaction.FinishRentalTransactionUseCase.Command;
+import edu.prz.hopsops.transactions.application.transaction.FinishTransactionUseCase.Command;
 import edu.prz.hopsops.transactions.domain.transaction.Transaction;
 import edu.prz.hopsops.transactions.domain.transaction.TransactionRepository;
 import edu.prz.hopsops.transactions.domain.transaction.TransactionStatus;
@@ -33,7 +32,7 @@ class TransactionUseCasesTest {
   RegisterRentalTransactionUseCase registerRentalTransactionUseCase;
 
   @Autowired
-  FinishRentalTransactionUseCase finishRentalTransactionUseCase;
+  FinishTransactionUseCase finishTransactionUseCase;
 
   @Autowired
   TransactionRepository transactionRepository;
@@ -65,13 +64,12 @@ class TransactionUseCasesTest {
   }
 
   @Test
-  void shouldRegisterAndFinishRentalTransaction() {
+  void shouldRegisterAndFinishTransaction() {
     Transaction rental = registerRentalTransactionUseCase.execute(
         new RegisterRentalTransactionUseCase.Command(
             new CustomerId(1L),
             LocalDate.of(2026, 5, 20),
-            new RentalOfferId(30L),
-            new EquipmentItemId(40L),
+            new EquipmentId(40L),
             LocalDate.of(2026, 5, 20),
             LocalDate.of(2026, 5, 23),
             new BigDecimal("50.00")
@@ -82,7 +80,7 @@ class TransactionUseCasesTest {
     assertEquals(TransactionStatus.IN_PROGRESS, rental.getStatus());
     assertEquals(new BigDecimal("50.00"), rental.getTotalAmount());
 
-    Transaction finished = finishRentalTransactionUseCase.execute(
+    Transaction finished = finishTransactionUseCase.execute(
         new Command(
             rental.getId(),
             LocalDate.of(2026, 5, 22),

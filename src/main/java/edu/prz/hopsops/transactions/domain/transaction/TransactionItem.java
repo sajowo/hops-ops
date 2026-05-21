@@ -1,9 +1,9 @@
 package edu.prz.hopsops.transactions.domain.transaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.prz.hopsops.foundation.domain.BaseEntity;
-import edu.prz.hopsops.shared.identity.EquipmentItemId;
+import edu.prz.hopsops.shared.identity.EquipmentId;
 import edu.prz.hopsops.shared.identity.EquipmentTypeId;
-import edu.prz.hopsops.shared.identity.RentalOfferId;
 import edu.prz.hopsops.shared.identity.SalesOfferId;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -27,6 +27,7 @@ public class TransactionItem extends BaseEntity {
 
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name = "transaction_id", referencedColumnName = "id", nullable = false)
+  @JsonIgnore
   Transaction transaction;
 
   @Enumerated(EnumType.STRING)
@@ -35,14 +36,11 @@ public class TransactionItem extends BaseEntity {
   @AttributeOverride(name = "id", column = @Column(name = "sales_offer_id"))
   SalesOfferId salesOfferId;
 
-  @AttributeOverride(name = "id", column = @Column(name = "rental_offer_id"))
-  RentalOfferId rentalOfferId;
-
   @AttributeOverride(name = "id", column = @Column(name = "equipment_type_id"))
   EquipmentTypeId equipmentTypeId;
 
-  @AttributeOverride(name = "id", column = @Column(name = "equipment_item_id"))
-  EquipmentItemId equipmentItemId;
+  @AttributeOverride(name = "id", column = @Column(name = "equipment_id"))
+  EquipmentId equipmentId;
 
   Integer quantity;
 
@@ -92,8 +90,7 @@ public class TransactionItem extends BaseEntity {
 
   static TransactionItem rental(
       Transaction transaction,
-      RentalOfferId rentalOfferId,
-      EquipmentItemId equipmentItemId,
+      EquipmentId equipmentId,
       LocalDate rentalStartDate,
       LocalDate plannedRentalEndDate,
       BigDecimal unitPrice
@@ -101,11 +98,8 @@ public class TransactionItem extends BaseEntity {
     if (transaction == null) {
       throw new IllegalArgumentException("Transaction is required");
     }
-    if (rentalOfferId == null) {
-      throw new IllegalArgumentException("Rental offer id is required");
-    }
-    if (equipmentItemId == null) {
-      throw new IllegalArgumentException("Equipment item id is required");
+    if (equipmentId == null) {
+      throw new IllegalArgumentException("Equipment id is required");
     }
     if (rentalStartDate == null) {
       throw new IllegalArgumentException("Rental start date is required");
@@ -120,8 +114,7 @@ public class TransactionItem extends BaseEntity {
     TransactionItem item = new TransactionItem();
     item.transaction = transaction;
     item.type = TransactionItemType.RENTAL;
-    item.rentalOfferId = rentalOfferId;
-    item.equipmentItemId = equipmentItemId;
+    item.equipmentId = equipmentId;
     item.quantity = 1;
     item.unitPrice = unitPrice;
     item.totalPrice = unitPrice;
@@ -138,7 +131,7 @@ public class TransactionItem extends BaseEntity {
     return type == TransactionItemType.RENTAL;
   }
 
-  void finishRental(LocalDate rentalEndDate) {
+  void finish(LocalDate rentalEndDate) {
     if (!isRental()) {
       throw new IllegalStateException("Only rental item can be finished");
     }

@@ -1,4 +1,4 @@
-package edu.prz.hopsops.rentaloffers.domain.equipmentitem;
+package edu.prz.hopsops.rentaloffers.domain.equipment;
 
 public enum EquipmentCondition {
 

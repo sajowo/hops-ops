@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 public abstract class BaseEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue
   Long id;
 
   @Version

@@ -7,4 +7,9 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public record SalesOfferId(@JsonValue Long id) implements Identity {
 
+  public SalesOfferId {
+    if (id == null || id <= 0) {
+      throw new IllegalArgumentException("Sales offer id must be a positive number");
+    }
+  }
 }

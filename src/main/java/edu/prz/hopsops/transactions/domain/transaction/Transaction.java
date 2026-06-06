@@ -100,8 +100,14 @@ public class Transaction extends BaseEntity {
     if (!containsRentalItem()) {
       throw new IllegalStateException("Only rental transaction can be finished");
     }
+    if (status != TransactionStatus.IN_PROGRESS) {
+      throw new IllegalStateException("Only in-progress rental transaction can be finished");
+    }
     if (rentalEndDate == null) {
       throw new IllegalArgumentException("Rental end date is required");
+    }
+    if (additionalFee != null && additionalFee.signum() < 0) {
+      throw new IllegalArgumentException("Additional fee cannot be negative");
     }
 
     this.additionalFee = additionalFee == null ? BigDecimal.ZERO : additionalFee;
@@ -117,6 +123,13 @@ public class Transaction extends BaseEntity {
       throw new IllegalStateException("Completed transaction cannot be cancelled");
     }
     status = TransactionStatus.CANCELLED;
+  }
+
+  public List<EquipmentId> rentalEquipmentIds() {
+    return items.stream()
+        .filter(TransactionItem::isRental)
+        .map(TransactionItem::getEquipmentId)
+        .toList();
   }
 
   private void ensureDraftOrInProgress() {

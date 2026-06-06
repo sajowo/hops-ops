@@ -7,4 +7,9 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public record EquipmentId(@JsonValue Long id) implements Identity {
 
+  public EquipmentId {
+    if (id == null || id <= 0) {
+      throw new IllegalArgumentException("Equipment id must be a positive number");
+    }
+  }
 }

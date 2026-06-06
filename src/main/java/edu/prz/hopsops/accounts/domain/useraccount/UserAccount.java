@@ -1,17 +1,16 @@
 package edu.prz.hopsops.accounts.domain.useraccount;
 
+import edu.prz.hopsops.foundation.domain.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-public class UserAccount {
-
-  @Id
-  Long id;
+@EqualsAndHashCode(callSuper = true)
+public class UserAccount extends BaseEntity {
 
   String username;
 

@@ -26,11 +26,49 @@ public class Equipment extends BaseEntity {
   @Enumerated(EnumType.STRING)
   EquipmentCondition condition;
 
+  public static Equipment create(
+      RentalOfferId rentalOfferId,
+      String serialNumber,
+      EquipmentCondition condition
+  ) {
+    if (rentalOfferId == null) {
+      throw new IllegalArgumentException("Rental offer id is required");
+    }
+    if (serialNumber == null || serialNumber.isBlank()) {
+      throw new IllegalArgumentException("Serial number is required");
+    }
+
+    Equipment equipment = new Equipment();
+    equipment.rentalOfferId = rentalOfferId;
+    equipment.serialNumber = serialNumber;
+    equipment.condition = condition == null ? EquipmentCondition.GOOD : condition;
+    equipment.status = EquipmentStatus.AVAILABLE;
+    return equipment;
+  }
+
   public void markRented() {
+    if (status != EquipmentStatus.AVAILABLE && status != EquipmentStatus.RESERVED) {
+      throw new IllegalStateException("Only available or reserved equipment can be rented");
+    }
     status = EquipmentStatus.RENTED;
+  }
+
+  public void markReserved() {
+    if (status != EquipmentStatus.AVAILABLE) {
+      throw new IllegalStateException("Only available equipment can be reserved");
+    }
+    status = EquipmentStatus.RESERVED;
   }
 
   public void markAvailable() {
     status = EquipmentStatus.AVAILABLE;
+  }
+
+  public boolean isAvailable() {
+    return status == EquipmentStatus.AVAILABLE;
+  }
+
+  public boolean isReserved() {
+    return status == EquipmentStatus.RESERVED;
   }
 }

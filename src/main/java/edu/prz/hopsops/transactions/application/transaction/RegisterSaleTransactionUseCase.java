@@ -1,5 +1,8 @@
 package edu.prz.hopsops.transactions.application.transaction;
 
+import edu.prz.hopsops.customers.domain.customer.CustomerRepository;
+import edu.prz.hopsops.salesoffers.domain.salesoffer.SalesOffer;
+import edu.prz.hopsops.salesoffers.domain.salesoffer.SalesOfferRepository;
 import edu.prz.hopsops.shared.identity.CustomerId;
 import edu.prz.hopsops.shared.identity.EquipmentTypeId;
 import edu.prz.hopsops.shared.identity.SalesOfferId;
@@ -18,20 +21,32 @@ public class RegisterSaleTransactionUseCase {
 
   final TransactionFactory transactionFactory;
   final TransactionRepository transactionRepository;
-//ma dodawac wiele tranzakcji, ale na razie niech dodaje jedna tranzakcje, potem bedziemy
-// przykldka taska (dorobic usulge do tranzakcji) 
+  final SalesOfferRepository salesOfferRepository;
+  final CustomerRepository customerRepository;
+
   @Transactional
   public Transaction execute(Command command) {
+    ensureCustomerExists(command.customerId());
+    SalesOffer salesOffer = salesOfferRepository.findById(command.salesOfferId().id())
+        .orElseThrow(() -> new IllegalArgumentException("Sales offer not found"));
+    BigDecimal unitPrice = salesOffer.resolveUnitPrice(command.unitPrice());
+
     Transaction transaction = transactionFactory.create(
         new TransactionFactory.Input(command.customerId(), command.transactionDate()));
     transaction.addSaleItem(
         command.salesOfferId(),
         command.equipmentTypeId(),
         command.quantity(),
-        command.unitPrice()
+        unitPrice
     );
     transaction.register();
     return transactionRepository.save(transaction);
+  }
+
+  private void ensureCustomerExists(CustomerId customerId) {
+    if (!customerRepository.existsById(customerId.id())) {
+      throw new IllegalArgumentException("Customer not found");
+    }
   }
 
   public record Command(

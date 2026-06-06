@@ -6,6 +6,8 @@ import edu.prz.hopsops.shared.identity.EquipmentId;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import java.time.LocalDate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,6 +26,9 @@ public class Reservation extends BaseEntity {
   LocalDate reservedFrom;
 
   LocalDate reservedTo;
+
+  @Enumerated(EnumType.STRING)
+  ReservationStatus status;
 
   public static Reservation create(
       EquipmentId equipmentId,
@@ -49,6 +54,21 @@ public class Reservation extends BaseEntity {
     reservation.customerId = customerId;
     reservation.reservedFrom = reservedFrom;
     reservation.reservedTo = reservedTo;
+    reservation.status = ReservationStatus.ACTIVE;
     return reservation;
+  }
+
+  public void complete() {
+    if (status != ReservationStatus.ACTIVE) {
+      throw new IllegalStateException("Only active reservation can be completed");
+    }
+    status = ReservationStatus.COMPLETED;
+  }
+
+  public void cancel() {
+    if (status != ReservationStatus.ACTIVE) {
+      throw new IllegalStateException("Only active reservation can be cancelled");
+    }
+    status = ReservationStatus.CANCELLED;
   }
 }

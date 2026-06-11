@@ -1,93 +1,59 @@
-# Wspolny projekt
+# Hops Ops
 
-Repozytorium zespolowe do pracy nad projektem.
+Aplikacja modeluje obsluge wypozyczalni i sprzedazy sprzetu. Aktualny backend obejmuje klientow, oferty sprzedazy, oferty wypozyczen, egzemplarze sprzetu, rezerwacje oraz transakcje sprzedazy i wypozyczen.
 
-## Szybki start
+## Dziedzina i konteksty
 
-1. Sklonuj repozytorium.
-2. Przelacz sie na branch `develop`.
-3. Utworz branch do swojego zadania, np. `feature/logowanie`.
-4. Po zakonczeniu pracy utworz Pull Request do `develop`.
+Glowny zakres systemu obejmuje:
 
-## Glowne branche
+- customers - kartoteka klientow,
+- sales / sales-offers - oferty sprzedazy sprzetu,
+- rental / rental-offers - oferty wypozyczen, egzemplarze sprzetu i rezerwacje,
+- transactions - rejestracja sprzedazy, wypozyczen i zakonczenia wypozyczenia.
 
-- `main` - stabilna wersja projektu, gotowa do oddania lub prezentacji.
-- `develop` - wspolna wersja robocza, do ktorej trafiaja zakonczone zadania.
+## Uruchomienie
 
-## Typy branchy
+1. Wczytaj projekt w IDE albo uruchom go z terminala.
+2. Zbuduj projekt poleceniem:
 
-- `feature/nazwa-zadania` - nowe funkcje.
-- `bugfix/nazwa-bledu` - poprawki bledow.
-- `docs/nazwa-dokumentu` - dokumentacja i analiza.
-- `design/nazwa-makiety` - makiety, diagramy i materialy projektowe.
-- `test/nazwa-testu` - scenariusze i automatyzacja testow.
-- `release/v1.0` - przygotowanie wersji do oddania.
+```bash
+sh gradlew test
+```
 
-## Zespol i foldery odpowiedzialnosci
+3. Uruchom aplikacje:
 
-Kazda rola ma swoje glowne miejsce pracy w repozytorium. Dzieki temu latwiej sprawdzac zmiany i unikac konfliktow.
+```bash
+sh gradlew bootRun
+```
 
-### Analitycy
+### Konsola H2
 
-Foldery i pliki:
+W przegladarce otworz:
 
-- `docs/wymagania.md`
-- `docs/user-stories.md`
-- `docs/kryteria-akceptacji.md`
+```text
+http://localhost:8080/h2-console
+```
 
-Odpowiedzialnosc:
+Parametry polaczenia:
 
-- wymagania,
-- user stories,
-- kryteria akceptacji,
-- zakres projektu.
+```text
+JDBC URL: jdbc:h2:file:./data/hopsops
+User Name: sa
+Password:
+```
 
-### Projektanci
+### Swagger
 
-Foldery:
+Dokumentacja API jest dostepna pod adresem:
 
-- `design/makiety/`
-- `design/diagramy/`
-- `assets/`
+```text
+http://localhost:8080/swagger-ui/index.html
+```
 
-Odpowiedzialnosc:
+## Testcase
 
-- makiety,
-- diagramy,
-- materialy graficzne,
-- opis wygladu aplikacji.
+Katalog `testcase/` zawiera kolekcje requestow API w formacie OpenCollection/Bruno. Domyslne srodowisko zaklada adres:
 
-### Programisci
-
-Foldery:
-
-- `src/`
-
-Odpowiedzialnosc:
-
-- kod aplikacji,
-- konfiguracja techniczna,
-- integracja funkcji.
-
-Jesli projekt zostanie podzielony na frontend i backend, mozna utworzyc `src/frontend/` oraz `src/backend/`.
-
-### Testerzy
-
-Foldery i pliki:
-
-- `tests/`
-- `docs/test-plan.md`
-- `docs/test-cases.md`
-
-Odpowiedzialnosc:
-
-- plan testow,
-- przypadki testowe,
-- testowanie zmian,
-- zglaszanie bledow.
-
-## Zasady pracy w folderach
-
-- Zmiany w cudzym obszarze warto uzgodnic w Pull Request albo Issue.
-- Dokumentacja analityczna powinna byc aktualizowana przed rozpoczeciem wiekszych zadan programistycznych.
-- Testy i przypadki testowe powinny byc dopisywane do funkcji, ktore trafiaja do `develop`.
+```text
+http://localhost:8080/api
+```

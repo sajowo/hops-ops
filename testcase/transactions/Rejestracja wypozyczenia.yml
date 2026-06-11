@@ -1,0 +1,26 @@
+info:
+  name: Rejestracja wypozyczenia
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{url}}/transactions/rentals"
+  body:
+    type: json
+    data: |-
+      {
+        "customerId": 1,
+        "transactionDate": "2026-06-15",
+        "equipmentId": 1,
+        "rentalStartDate": "2026-06-15",
+        "plannedRentalEndDate": "2026-06-20",
+        "unitPrice": 80.00
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

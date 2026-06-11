@@ -1,0 +1,25 @@
+info:
+  name: Rejestracja oferty wypozyczenia
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{url}}/rental-offers"
+  body:
+    type: json
+    data: |-
+      {
+        "equipmentName": "Wiertarka udarowa",
+        "category": "Elektronarzedzia",
+        "manufacturer": "Demo",
+        "description": "Sprzet do wypozyczenia",
+        "rentalPrice": 80.00
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

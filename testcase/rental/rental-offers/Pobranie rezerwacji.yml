@@ -1,0 +1,15 @@
+info:
+  name: Pobranie rezerwacji
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: "{{url}}/rental-offers/reservations"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

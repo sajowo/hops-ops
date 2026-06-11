@@ -4,12 +4,19 @@ import edu.prz.hopsops.shared.identity.CustomerId;
 import edu.prz.hopsops.shared.identity.EquipmentId;
 import edu.prz.hopsops.shared.identity.EquipmentTypeId;
 import edu.prz.hopsops.shared.identity.SalesOfferId;
+import edu.prz.hopsops.foundation.application.BaseController;
 import edu.prz.hopsops.transactions.domain.transaction.Transaction;
 import edu.prz.hopsops.transactions.domain.transaction.TransactionRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,9 +26,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "transactions", description = "Transactions")
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
-public class TransactionController {
+public class TransactionController extends BaseController {
 
   final TransactionRepository transactionRepository;
   final RegisterSaleTransactionUseCase registerSaleTransactionUseCase;
@@ -29,29 +37,29 @@ public class TransactionController {
   final FinishTransactionUseCase finishTransactionUseCase;
 
   @PostMapping("/sales")
-  public ResponseEntity<Transaction> registerSale(@RequestBody RegisterSaleRequest request) {
+  public ResponseEntity<Transaction> registerSale(@RequestBody @Valid RegisterSaleRequest request) {
     return ResponseEntity.ok(registerSaleTransactionUseCase.execute(request.toCommand()));
   }
 
   @PostMapping("/rentals")
-  public ResponseEntity<Transaction> registerRental(@RequestBody RegisterRentalRequest request) {
+  public ResponseEntity<Transaction> registerRental(@RequestBody @Valid RegisterRentalRequest request) {
     return ResponseEntity.ok(registerRentalTransactionUseCase.execute(request.toCommand()));
   }
 
-  @PostMapping("/{id}/finish")
+  @PostMapping(_ID + "/finish")
   public ResponseEntity<Transaction> finish(
       @PathVariable Long id,
-      @RequestBody FinishTransactionRequest request
+      @RequestBody @Valid FinishTransactionRequest request
   ) {
     return ResponseEntity.ok(finishTransactionUseCase.execute(request.toCommand(id)));
   }
 
   @GetMapping
-  public ResponseEntity<List<Transaction>> getAll() {
-    return ResponseEntity.ok(transactionRepository.findAll());
+  public ResponseEntity<Page<Transaction>> getAll(Pageable pageable) {
+    return ResponseEntity.ok(transactionRepository.findAll(pageable));
   }
 
-  @GetMapping("/{id}")
+  @GetMapping(_ID)
   public ResponseEntity<Transaction> getOne(@PathVariable Long id) {
     return transactionRepository.findById(id)
         .map(ResponseEntity::ok)
@@ -59,11 +67,21 @@ public class TransactionController {
   }
 
   public record RegisterSaleRequest(
+      @NotNull
+      @Positive
       Long customerId,
+      @NotNull
       LocalDate transactionDate,
+      @NotNull
+      @Positive
       Long salesOfferId,
+      @NotNull
+      @Positive
       Long equipmentTypeId,
+      @NotNull
+      @Positive
       Integer quantity,
+      @DecimalMin("0.00")
       BigDecimal unitPrice
   ) {
 
@@ -80,11 +98,19 @@ public class TransactionController {
   }
 
   public record RegisterRentalRequest(
+      @NotNull
+      @Positive
       Long customerId,
+      @NotNull
       LocalDate transactionDate,
+      @NotNull
+      @Positive
       Long equipmentId,
+      @NotNull
       LocalDate rentalStartDate,
+      @NotNull
       LocalDate plannedRentalEndDate,
+      @DecimalMin("0.00")
       BigDecimal unitPrice
   ) {
 
@@ -101,7 +127,9 @@ public class TransactionController {
   }
 
   public record FinishTransactionRequest(
+      @NotNull
       LocalDate finishedAt,
+      @DecimalMin("0.00")
       BigDecimal additionalFee
   ) {
 

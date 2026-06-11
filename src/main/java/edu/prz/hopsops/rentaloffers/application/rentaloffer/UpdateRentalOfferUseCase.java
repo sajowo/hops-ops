@@ -2,6 +2,7 @@ package edu.prz.hopsops.rentaloffers.application.rentaloffer;
 
 import edu.prz.hopsops.rentaloffers.domain.rentaloffer.RentalOffer;
 import edu.prz.hopsops.rentaloffers.domain.rentaloffer.RentalOfferRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class UpdateRentalOfferUseCase {
   @Transactional
   public RentalOffer execute(Command command) {
     RentalOffer rentalOffer = rentalOfferRepository.findById(command.id())
-        .orElseThrow(() -> new IllegalArgumentException("Rental offer not found"));
+        .orElseThrow(() -> new EntityNotFoundException("Rental offer not found"));
     rentalOffer.updateDetails(
         command.equipmentName(),
         command.category(),

@@ -2,6 +2,7 @@ package edu.prz.hopsops.salesoffers.application.salesoffer;
 
 import edu.prz.hopsops.salesoffers.domain.salesoffer.SalesOffer;
 import edu.prz.hopsops.salesoffers.domain.salesoffer.SalesOfferRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class UpdateSalesOfferUseCase {
   @Transactional
   public SalesOffer execute(Command command) {
     SalesOffer salesOffer = salesOfferRepository.findById(command.id())
-        .orElseThrow(() -> new IllegalArgumentException("Sales offer not found"));
+        .orElseThrow(() -> new EntityNotFoundException("Sales offer not found"));
     salesOffer.updateDetails(
         command.equipmentName(),
         command.category(),

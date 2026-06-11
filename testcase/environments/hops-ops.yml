@@ -1,0 +1,16 @@
+name: hops-ops
+variables:
+  - name: url
+    value: http://localhost:8080/api
+  - name: customer_id
+    value: "1"
+  - name: sales_offer_id
+    value: "1"
+  - name: rental_offer_id
+    value: "1"
+  - name: equipment_id
+    value: "1"
+  - name: equipment_type_id
+    value: "1"
+  - name: transaction_id
+    value: "1"

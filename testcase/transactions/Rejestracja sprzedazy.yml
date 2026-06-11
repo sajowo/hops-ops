@@ -1,0 +1,26 @@
+info:
+  name: Rejestracja sprzedazy
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{url}}/transactions/sales"
+  body:
+    type: json
+    data: |-
+      {
+        "customerId": 1,
+        "transactionDate": "2026-06-15",
+        "salesOfferId": 1,
+        "equipmentTypeId": 1,
+        "quantity": 1,
+        "unitPrice": 1200.00
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

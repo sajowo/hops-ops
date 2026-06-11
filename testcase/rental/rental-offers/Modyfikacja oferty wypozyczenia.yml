@@ -1,0 +1,25 @@
+info:
+  name: Modyfikacja oferty wypozyczenia
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: "{{url}}/rental-offers/{{rental_offer_id}}"
+  body:
+    type: json
+    data: |-
+      {
+        "equipmentName": "Wiertarka udarowa",
+        "category": "Elektronarzedzia",
+        "manufacturer": "Demo",
+        "description": "Sprzet po aktualizacji",
+        "rentalPrice": 85.00
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

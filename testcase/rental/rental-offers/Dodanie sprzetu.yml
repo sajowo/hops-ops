@@ -1,0 +1,22 @@
+info:
+  name: Dodanie sprzetu
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{url}}/rental-offers/{{rental_offer_id}}/equipment"
+  body:
+    type: json
+    data: |-
+      {
+        "serialNumber": "EQ-001",
+        "condition": "GOOD"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

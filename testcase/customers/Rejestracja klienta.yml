@@ -1,0 +1,25 @@
+info:
+  name: Rejestracja klienta
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{url}}/customers"
+  body:
+    type: json
+    data: |-
+      {
+        "firstName": "Jan",
+        "lastName": "Kowalski",
+        "address": "Rzeszow, ul. Testowa 1",
+        "phoneNumber": "500600700",
+        "email": "jan.kowalski@example.com"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

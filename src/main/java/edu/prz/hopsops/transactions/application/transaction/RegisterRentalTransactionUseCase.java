@@ -1,6 +1,7 @@
 package edu.prz.hopsops.transactions.application.transaction;
 
 import edu.prz.hopsops.customers.domain.customer.CustomerRepository;
+import edu.prz.hopsops.foundation.domain.NotExistsException;
 import edu.prz.hopsops.rentaloffers.domain.equipment.Equipment;
 import edu.prz.hopsops.rentaloffers.domain.equipment.EquipmentRepository;
 import edu.prz.hopsops.rentaloffers.domain.rentaloffer.RentalOffer;
@@ -34,9 +35,9 @@ public class RegisterRentalTransactionUseCase {
   public Transaction execute(Command command) {
     ensureCustomerExists(command.customerId());
     Equipment equipment = equipmentRepository.findById(command.equipmentId().id())
-        .orElseThrow(() -> new IllegalArgumentException("Equipment not found"));
+        .orElseThrow(() -> NotExistsException.of("Equipment not found"));
     RentalOffer rentalOffer = rentalOfferRepository.findById(equipment.getRentalOfferId().id())
-        .orElseThrow(() -> new IllegalArgumentException("Rental offer not found"));
+        .orElseThrow(() -> NotExistsException.of("Rental offer not found"));
     BigDecimal unitPrice = rentalOffer.resolveUnitPrice(command.unitPrice());
     reserveOrRentEquipment(command, equipment, rentalOffer);
 
@@ -81,7 +82,7 @@ public class RegisterRentalTransactionUseCase {
 
   private void ensureCustomerExists(CustomerId customerId) {
     if (!customerRepository.existsById(customerId.id())) {
-      throw new IllegalArgumentException("Customer not found");
+      throw NotExistsException.of("Customer not found");
     }
   }
 

@@ -1,0 +1,25 @@
+info:
+  name: Rejestracja oferty sprzedazy
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{url}}/sales-offers"
+  body:
+    type: json
+    data: |-
+      {
+        "equipmentName": "Kosiarka spalinowa",
+        "category": "Ogrod",
+        "manufacturer": "Demo",
+        "description": "Sprzet do sprzedazy",
+        "salePrice": 1200.00
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

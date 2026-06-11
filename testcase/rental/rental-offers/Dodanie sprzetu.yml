@@ -15,6 +15,19 @@ http:
       }
   auth: inherit
 
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "201"
+  scripts:
+    - type: after-response
+      code: |-
+        const body = res.getBody();
+        if (body && body.id) {
+          bru.setVar("equipment_id", String(body.id));
+        }
+
 settings:
   encodeUrl: true
   timeout: 0

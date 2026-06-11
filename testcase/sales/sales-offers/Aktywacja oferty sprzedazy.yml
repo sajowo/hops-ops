@@ -1,12 +1,18 @@
 info:
   name: Aktywacja oferty sprzedazy
   type: http
-  seq: 3
+  seq: 4
 
 http:
   method: POST
   url: "{{url}}/sales-offers/{{sales_offer_id}}/activate"
   auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
 
 settings:
   encodeUrl: true

@@ -10,12 +10,18 @@ http:
     type: json
     data: |-
       {
-        "equipmentId": 1,
-        "customerId": 1,
+        "equipmentId": {{equipment_id}},
+        "customerId": {{customer_id}},
         "reservedFrom": "2026-06-15",
         "reservedTo": "2026-06-20"
       }
   auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "201"
 
 settings:
   encodeUrl: true

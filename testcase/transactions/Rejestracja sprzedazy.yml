@@ -10,14 +10,20 @@ http:
     type: json
     data: |-
       {
-        "customerId": 1,
+        "customerId": {{customer_id}},
         "transactionDate": "2026-06-15",
-        "salesOfferId": 1,
-        "equipmentTypeId": 1,
+        "salesOfferId": {{sales_offer_id}},
+        "equipmentTypeId": {{equipment_type_id}},
         "quantity": 1,
         "unitPrice": 1200.00
       }
   auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
 
 settings:
   encodeUrl: true

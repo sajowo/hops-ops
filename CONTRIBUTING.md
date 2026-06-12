@@ -46,6 +46,19 @@ Kazdy Pull Request powinien zawierac:
 - informacje jak sprawdzic zmiane,
 - screenshot, jesli zmiana dotyczy widoku.
 
+Dla zmian backendowych jako minimum warto uruchomic:
+
+```bash
+sh ./gradlew test
+```
+
+Jesli zmiana dotyczy API, po starcie aplikacji warto dodatkowo uruchomic kolekcje Bruno:
+
+```bash
+cd testcase
+npx @usebruno/cli@latest run -r . --env hops-ops
+```
+
 ## Ochrona branchy na GitHubie
 
 Dla `main` warto ustawic:
@@ -60,4 +73,3 @@ Dla `develop` warto ustawic:
 - Pull Request zamiast direct push,
 - minimum 1 review,
 - rozwiazywanie konfliktow przed mergem.
-

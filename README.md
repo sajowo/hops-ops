@@ -1,93 +1,78 @@
-# Wspolny projekt
+# Hops Ops
 
-Repozytorium zespolowe do pracy nad projektem.
+Aplikacja modeluje obsluge wypozyczalni i sprzedazy sprzetu. Aktualny backend obejmuje klientow, oferty sprzedazy, oferty wypozyczen, egzemplarze sprzetu, rezerwacje oraz transakcje sprzedazy i wypozyczen.
 
-## Szybki start
+## Dziedzina i konteksty
 
-1. Sklonuj repozytorium.
-2. Przelacz sie na branch `develop`.
-3. Utworz branch do swojego zadania, np. `feature/logowanie`.
-4. Po zakonczeniu pracy utworz Pull Request do `develop`.
+Glowny zakres systemu obejmuje:
 
-## Glowne branche
+- customers - kartoteka klientow,
+- sales / sales-offers - oferty sprzedazy sprzetu,
+- rental / rental-offers - oferty wypozyczen, egzemplarze sprzetu i rezerwacje,
+- transactions - rejestracja sprzedazy, wypozyczen i zakonczenia wypozyczenia.
 
-- `main` - stabilna wersja projektu, gotowa do oddania lub prezentacji.
-- `develop` - wspolna wersja robocza, do ktorej trafiaja zakonczone zadania.
+## Uruchomienie
 
-## Typy branchy
+### Wymagania
 
-- `feature/nazwa-zadania` - nowe funkcje.
-- `bugfix/nazwa-bledu` - poprawki bledow.
-- `docs/nazwa-dokumentu` - dokumentacja i analiza.
-- `design/nazwa-makiety` - makiety, diagramy i materialy projektowe.
-- `test/nazwa-testu` - scenariusze i automatyzacja testow.
-- `release/v1.0` - przygotowanie wersji do oddania.
+- Java 21.
+- Dostep do internetu przy pierwszym uruchomieniu Gradle/Bruno, jesli zaleznosci nie sa jeszcze pobrane.
+- Opcjonalnie Bruno CLI albo `npx`, jezeli chcesz uruchomic kolekcje REST z katalogu `testcase/`.
 
-## Zespol i foldery odpowiedzialnosci
+### Backend
 
-Kazda rola ma swoje glowne miejsce pracy w repozytorium. Dzieki temu latwiej sprawdzac zmiany i unikac konfliktow.
+1. Wczytaj projekt w IDE albo uruchom go z terminala.
+2. Zbuduj projekt i uruchom testy automatyczne:
 
-### Analitycy
+```bash
+sh ./gradlew test
+```
 
-Foldery i pliki:
+3. Uruchom aplikacje:
 
-- `docs/wymagania.md`
-- `docs/user-stories.md`
-- `docs/kryteria-akceptacji.md`
+```bash
+sh ./gradlew bootRun
+```
 
-Odpowiedzialnosc:
+Po starcie backend dziala lokalnie pod adresem `http://localhost:8080`.
 
-- wymagania,
-- user stories,
-- kryteria akceptacji,
-- zakres projektu.
+### Konsola H2
 
-### Projektanci
+W przegladarce otworz:
 
-Foldery:
+```text
+http://localhost:8080/h2-console
+```
 
-- `design/makiety/`
-- `design/diagramy/`
-- `assets/`
+Parametry polaczenia:
 
-Odpowiedzialnosc:
+```text
+JDBC URL: jdbc:h2:file:./data/hopsops
+User Name: sa
+Password:
+```
 
-- makiety,
-- diagramy,
-- materialy graficzne,
-- opis wygladu aplikacji.
+### Swagger
 
-### Programisci
+Dokumentacja API jest dostepna pod adresem:
 
-Foldery:
+```text
+http://localhost:8080/swagger-ui.html
+```
 
-- `src/`
+## Testcase
 
-Odpowiedzialnosc:
+Katalog `testcase/` zawiera kolekcje requestow API w formacie OpenCollection/Bruno. Domyslne srodowisko `hops-ops` zaklada adres:
 
-- kod aplikacji,
-- konfiguracja techniczna,
-- integracja funkcji.
+```text
+http://localhost:8080/api
+```
 
-Jesli projekt zostanie podzielony na frontend i backend, mozna utworzyc `src/frontend/` oraz `src/backend/`.
+Kolekcja obejmuje 23 requesty dla klientow, ofert sprzedazy, ofert wypozyczen i transakcji. Requesty maja asercje statusow HTTP, a kroki tworzace dane zapisują zwrocone identyfikatory do zmiennych Bruno (`customer_id`, `sales_offer_id`, `rental_offer_id`, `equipment_id`, `transaction_id`). Dzieki temu przeplyw kolekcji nie wymaga recznego przepisywania ID.
 
-### Testerzy
+Przy uruchomionym backendzie kolekcje mozna sprawdzic poleceniem:
 
-Foldery i pliki:
-
-- `tests/`
-- `docs/test-plan.md`
-- `docs/test-cases.md`
-
-Odpowiedzialnosc:
-
-- plan testow,
-- przypadki testowe,
-- testowanie zmian,
-- zglaszanie bledow.
-
-## Zasady pracy w folderach
-
-- Zmiany w cudzym obszarze warto uzgodnic w Pull Request albo Issue.
-- Dokumentacja analityczna powinna byc aktualizowana przed rozpoczeciem wiekszych zadan programistycznych.
-- Testy i przypadki testowe powinny byc dopisywane do funkcji, ktore trafiaja do `develop`.
+```bash
+cd testcase
+npx @usebruno/cli@latest run -r . --env hops-ops
+```

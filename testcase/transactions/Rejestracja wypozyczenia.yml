@@ -1,0 +1,39 @@
+info:
+  name: Rejestracja wypozyczenia
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{url}}/transactions/rentals"
+  body:
+    type: json
+    data: |-
+      {
+        "customerId": {{customer_id}},
+        "transactionDate": "2026-06-15",
+        "equipmentId": {{equipment_id}},
+        "rentalStartDate": "2026-06-15",
+        "plannedRentalEndDate": "2026-06-20",
+        "unitPrice": 80.00
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+  scripts:
+    - type: after-response
+      code: |-
+        const body = res.getBody();
+        if (body && body.id) {
+          bru.setVar("transaction_id", String(body.id));
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

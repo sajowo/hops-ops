@@ -7,11 +7,19 @@ import edu.prz.hopsops.rentaloffers.domain.rentaloffer.RentalOffer;
 import edu.prz.hopsops.rentaloffers.domain.rentaloffer.RentalOfferRepository;
 import edu.prz.hopsops.rentaloffers.domain.reservation.Reservation;
 import edu.prz.hopsops.rentaloffers.domain.reservation.ReservationRepository;
+import edu.prz.hopsops.foundation.application.BaseController;
 import edu.prz.hopsops.shared.identity.RentalOfferId;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +31,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "rental / rental-offers", description = "Rental offers")
 @RequestMapping("/api/rental-offers")
 @RequiredArgsConstructor
-public class RentalOfferController {
+public class RentalOfferController extends BaseController {
 
   final RentalOfferRepository rentalOfferRepository;
   final EquipmentRepository equipmentRepository;
@@ -36,7 +45,7 @@ public class RentalOfferController {
   final ReserveEquipmentUseCase reserveEquipmentUseCase;
 
   @PostMapping
-  public ResponseEntity<RentalOffer> create(@RequestBody RentalOfferRequest request) {
+  public ResponseEntity<RentalOffer> create(@RequestBody @Valid RentalOfferRequest request) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(createRentalOfferUseCase.execute(request.toCreateCommand()));
@@ -45,25 +54,25 @@ public class RentalOfferController {
   @PutMapping("/{id}")
   public ResponseEntity<RentalOffer> update(
       @PathVariable Long id,
-      @RequestBody RentalOfferRequest request
+      @RequestBody @Valid RentalOfferRequest request
   ) {
     return ResponseEntity.ok(updateRentalOfferUseCase.execute(request.toUpdateCommand(id)));
   }
 
-  @PostMapping("/{id}/equipment")
+  @PostMapping(_ID + "/equipment")
   public ResponseEntity<Equipment> addEquipment(
       @PathVariable Long id,
-      @RequestBody AddEquipmentRequest request
+      @RequestBody @Valid AddEquipmentRequest request
   ) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(addEquipmentToRentalOfferUseCase.execute(request.toCommand(id)));
   }
 
-  @PostMapping("/{id}/reservations")
+  @PostMapping(_ID + "/reservations")
   public ResponseEntity<Reservation> reserve(
       @PathVariable Long id,
-      @RequestBody ReserveEquipmentRequest request
+      @RequestBody @Valid ReserveEquipmentRequest request
   ) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
@@ -71,32 +80,34 @@ public class RentalOfferController {
   }
 
   @GetMapping
-  public ResponseEntity<List<RentalOffer>> getAll() {
-    return ResponseEntity.ok(rentalOfferRepository.findAll());
+  public ResponseEntity<Page<RentalOffer>> getAll(Pageable pageable) {
+    return ResponseEntity.ok(rentalOfferRepository.findAll(pageable));
   }
 
-  @GetMapping("/{id}")
+  @GetMapping(_ID)
   public ResponseEntity<RentalOffer> getOne(@PathVariable Long id) {
     return rentalOfferRepository.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
 
-  @GetMapping("/{id}/equipment")
-  public ResponseEntity<List<Equipment>> getEquipment(@PathVariable Long id) {
-    return ResponseEntity.ok(equipmentRepository.findByRentalOfferId(new RentalOfferId(id)));
+  @GetMapping(_ID + "/equipment")
+  public ResponseEntity<Page<Equipment>> getEquipment(@PathVariable Long id, Pageable pageable) {
+    return ResponseEntity.ok(equipmentRepository.findByRentalOfferId(new RentalOfferId(id), pageable));
   }
 
   @GetMapping("/reservations")
-  public ResponseEntity<List<Reservation>> getReservations() {
-    return ResponseEntity.ok(reservationRepository.findAll());
+  public ResponseEntity<Page<Reservation>> getReservations(Pageable pageable) {
+    return ResponseEntity.ok(reservationRepository.findAll(pageable));
   }
 
   public record RentalOfferRequest(
-      String equipmentName,
+      @NotBlank String equipmentName,
       String category,
       String manufacturer,
       String description,
+      @NotNull
+      @DecimalMin("0.00")
       BigDecimal rentalPrice
   ) {
 
@@ -123,7 +134,7 @@ public class RentalOfferController {
   }
 
   public record AddEquipmentRequest(
-      String serialNumber,
+      @NotBlank String serialNumber,
       EquipmentCondition condition
   ) {
 
@@ -137,9 +148,15 @@ public class RentalOfferController {
   }
 
   public record ReserveEquipmentRequest(
+      @NotNull
+      @Positive
       Long equipmentId,
+      @NotNull
+      @Positive
       Long customerId,
+      @NotNull
       LocalDate reservedFrom,
+      @NotNull
       LocalDate reservedTo
   ) {
 

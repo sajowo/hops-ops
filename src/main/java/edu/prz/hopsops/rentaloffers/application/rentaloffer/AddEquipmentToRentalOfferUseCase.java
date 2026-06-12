@@ -6,6 +6,7 @@ import edu.prz.hopsops.rentaloffers.domain.equipment.EquipmentRepository;
 import edu.prz.hopsops.rentaloffers.domain.rentaloffer.RentalOffer;
 import edu.prz.hopsops.rentaloffers.domain.rentaloffer.RentalOfferRepository;
 import edu.prz.hopsops.shared.identity.RentalOfferId;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public class AddEquipmentToRentalOfferUseCase {
   @Transactional
   public Equipment execute(Command command) {
     RentalOffer rentalOffer = rentalOfferRepository.findById(command.rentalOfferId())
-        .orElseThrow(() -> new IllegalArgumentException("Rental offer not found"));
+        .orElseThrow(() -> new EntityNotFoundException("Rental offer not found"));
     Equipment equipment = Equipment.create(
         new RentalOfferId(command.rentalOfferId()),
         command.serialNumber(),

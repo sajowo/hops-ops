@@ -1,0 +1,35 @@
+info:
+  name: Dodanie sprzetu
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{url}}/rental-offers/{{rental_offer_id}}/equipment"
+  body:
+    type: json
+    data: |-
+      {
+        "serialNumber": "EQ-001",
+        "condition": "GOOD"
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "201"
+  scripts:
+    - type: after-response
+      code: |-
+        const body = res.getBody();
+        if (body && body.id) {
+          bru.setVar("equipment_id", String(body.id));
+        }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

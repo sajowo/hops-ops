@@ -1,6 +1,7 @@
 package edu.prz.hopsops.transactions.application.transaction;
 
 import edu.prz.hopsops.customers.domain.customer.CustomerRepository;
+import edu.prz.hopsops.foundation.domain.NotExistsException;
 import edu.prz.hopsops.salesoffers.domain.salesoffer.SalesOffer;
 import edu.prz.hopsops.salesoffers.domain.salesoffer.SalesOfferRepository;
 import edu.prz.hopsops.shared.identity.CustomerId;
@@ -28,7 +29,7 @@ public class RegisterSaleTransactionUseCase {
   public Transaction execute(Command command) {
     ensureCustomerExists(command.customerId());
     SalesOffer salesOffer = salesOfferRepository.findById(command.salesOfferId().id())
-        .orElseThrow(() -> new IllegalArgumentException("Sales offer not found"));
+        .orElseThrow(() -> NotExistsException.of("Sales offer not found"));
     BigDecimal unitPrice = salesOffer.resolveUnitPrice(command.unitPrice());
 
     Transaction transaction = transactionFactory.create(
@@ -45,7 +46,7 @@ public class RegisterSaleTransactionUseCase {
 
   private void ensureCustomerExists(CustomerId customerId) {
     if (!customerRepository.existsById(customerId.id())) {
-      throw new IllegalArgumentException("Customer not found");
+      throw NotExistsException.of("Customer not found");
     }
   }
 

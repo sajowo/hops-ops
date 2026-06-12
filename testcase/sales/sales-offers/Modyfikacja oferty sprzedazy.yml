@@ -1,0 +1,31 @@
+info:
+  name: Modyfikacja oferty sprzedazy
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: "{{url}}/sales-offers/{{sales_offer_id}}"
+  body:
+    type: json
+    data: |-
+      {
+        "equipmentName": "Kosiarka spalinowa",
+        "category": "Ogrod",
+        "manufacturer": "Demo",
+        "description": "Sprzet po aktualizacji",
+        "salePrice": 1250.00
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

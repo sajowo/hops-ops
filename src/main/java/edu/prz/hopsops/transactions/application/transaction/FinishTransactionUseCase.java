@@ -7,6 +7,7 @@ import edu.prz.hopsops.rentaloffers.domain.rentaloffer.RentalOfferRepository;
 import edu.prz.hopsops.shared.identity.EquipmentId;
 import edu.prz.hopsops.transactions.domain.transaction.Transaction;
 import edu.prz.hopsops.transactions.domain.transaction.TransactionRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -25,7 +26,7 @@ public class FinishTransactionUseCase {
   @Transactional
   public Transaction execute(Command command) {
     Transaction transaction = transactionRepository.findById(command.transactionId())
-        .orElseThrow(() -> new IllegalArgumentException("Transaction not found"));
+        .orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
     List<EquipmentId> rentedEquipmentIds = transaction.rentalEquipmentIds();
     transaction.finishTransaction(command.finishedAt(), command.additionalFee());
     rentedEquipmentIds.forEach(this::releaseEquipment);
@@ -34,9 +35,9 @@ public class FinishTransactionUseCase {
 
   private void releaseEquipment(EquipmentId equipmentId) {
     Equipment equipment = equipmentRepository.findById(equipmentId.id())
-        .orElseThrow(() -> new IllegalArgumentException("Equipment not found"));
+        .orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
     RentalOffer rentalOffer = rentalOfferRepository.findById(equipment.getRentalOfferId().id())
-        .orElseThrow(() -> new IllegalArgumentException("Rental offer not found"));
+        .orElseThrow(() -> new EntityNotFoundException("Rental offer not found"));
 
     equipment.markAvailable();
     rentalOffer.markItemReturned();

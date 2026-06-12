@@ -2,6 +2,7 @@ package edu.prz.hopsops.salesoffers.application.salesoffer;
 
 import edu.prz.hopsops.salesoffers.domain.salesoffer.SalesOffer;
 import edu.prz.hopsops.salesoffers.domain.salesoffer.SalesOfferRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,7 @@ public class ChangeSalesOfferStatusUseCase {
   @Transactional
   public SalesOffer execute(Command command) {
     SalesOffer salesOffer = salesOfferRepository.findById(command.id())
-        .orElseThrow(() -> new IllegalArgumentException("Sales offer not found"));
+        .orElseThrow(() -> new EntityNotFoundException("Sales offer not found"));
     if (command.active()) {
       salesOffer.activate();
     } else {

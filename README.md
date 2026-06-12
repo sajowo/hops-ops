@@ -1,93 +1,115 @@
-# Wspolny projekt
+# Hops Ops
 
-Repozytorium zespolowe do pracy nad projektem.
+## Opis projektu
 
-## Szybki start
+Aplikacja Hops Ops modeluje obsluge lokalnego sklepu sportowego, ktory prowadzi
+sprzedaz detaliczna oraz czasowy wynajem sprzetu sportowego. System wspiera
+pracownikow w rejestrowaniu klientow, zarzadzaniu oferta sprzetu, prowadzeniu
+rezerwacji oraz obsludze transakcji sprzedazy i wypozyczen.
 
-1. Sklonuj repozytorium.
-2. Przelacz sie na branch `develop`.
-3. Utworz branch do swojego zadania, np. `feature/logowanie`.
-4. Po zakonczeniu pracy utworz Pull Request do `develop`.
+W modelu dziedziny centralnym pojeciem jest transakcja, poniewaz laczy klienta
+z asortymentem i okresla, czy operacja dotyczy sprzedazy, czy wypozyczenia.
+Oferta sprzedazy opisuje sprzet przeznaczony do zakupu, a oferta wypozyczenia
+jest powiazana z konkretnymi egzemplarzami sprzetu. Egzemplarze maja stan oraz
+status dostepnosci, dzieki czemu system moze blokowac wypozyczenie sprzetu,
+ktory jest juz wypozyczony albo zarezerwowany.
 
-## Glowne branche
+Projekt zostal przygotowany w stylu Domain-Driven Design. Kod jest podzielony
+na konteksty ograniczone reprezentowane przez pakiety Java, a przypadki uzycia
+sa umieszczone w warstwie aplikacyjnej jako osobne serwisy transakcyjne.
 
-- `main` - stabilna wersja projektu, gotowa do oddania lub prezentacji.
-- `develop` - wspolna wersja robocza, do ktorej trafiaja zakonczone zadania.
+## Dziedzina i konteksty
 
-## Typy branchy
+Glowny zakres systemu obejmuje:
 
-- `feature/nazwa-zadania` - nowe funkcje.
-- `bugfix/nazwa-bledu` - poprawki bledow.
-- `docs/nazwa-dokumentu` - dokumentacja i analiza.
-- `design/nazwa-makiety` - makiety, diagramy i materialy projektowe.
-- `test/nazwa-testu` - scenariusze i automatyzacja testow.
-- `release/v1.0` - przygotowanie wersji do oddania.
+- `customers` - kartoteka klientow, czyli dane identyfikacyjne i kontaktowe
+  osob korzystajacych ze sklepu oraz wypozyczalni,
+- `salesoffers` - oferty sprzedazy sprzetu, ceny sprzedazy i status aktywnosci
+  oferty,
+- `rentaloffers` - oferty wypozyczenia, egzemplarze sprzetu, rezerwacje,
+  dostepnosc i status sprzetu,
+- `transactions` - rejestracja sprzedazy, rejestracja wypozyczenia oraz
+  zakonczenie wypozyczenia z naliczeniem ewentualnych oplat dodatkowych,
+- `accounts` - model kont uzytkownikow systemu, rol i aktywnosci kont.
 
-## Zespol i foldery odpowiedzialnosci
+Aktualny backend udostepnia operacje REST dla klientow, ofert sprzedazy, ofert
+wypozyczen, egzemplarzy sprzetu, rezerwacji oraz transakcji. Elementy logowania
+i zakladania kont sa ujete w analizie oraz modelu domenowym, natomiast glowny
+zaimplementowany zakres operacyjny dotyczy obslugi sprzedazy i wypozyczen.
 
-Kazda rola ma swoje glowne miejsce pracy w repozytorium. Dzieki temu latwiej sprawdzac zmiany i unikac konfliktow.
+## Uruchomienie
 
-### Analitycy
+### Wymagania
 
-Foldery i pliki:
+- Java 21.
+- Dostep do internetu przy pierwszym uruchomieniu Gradle/Bruno, jezeli
+  zaleznosci nie sa jeszcze pobrane.
+- Opcjonalnie Bruno CLI albo `npx`, jezeli chcesz uruchomic kolekcje REST z
+  katalogu `testcase/`.
 
-- `docs/wymagania.md`
-- `docs/user-stories.md`
-- `docs/kryteria-akceptacji.md`
+### Backend
 
-Odpowiedzialnosc:
+1. Wczytaj projekt w IDE (IntelliJ: File / Open lub File / New / Project from
+   Version Control...).
+2. Poczekaj, az projekt zbuduje sie przez Gradle.
+3. Testy mozna uruchomic z terminala:
 
-- wymagania,
-- user stories,
-- kryteria akceptacji,
-- zakres projektu.
+```bash
+sh ./gradlew test
+```
 
-### Projektanci
+4. Aplikacje mozna uruchomic z IDE albo poleceniem:
 
-Foldery:
+```bash
+sh ./gradlew bootRun
+```
 
-- `design/makiety/`
-- `design/diagramy/`
-- `assets/`
+Po starcie backend dziala lokalnie pod adresem `http://localhost:8080`.
 
-Odpowiedzialnosc:
+## Konsola H2
 
-- makiety,
-- diagramy,
-- materialy graficzne,
-- opis wygladu aplikacji.
+W przegladarce otworz adres:
 
-### Programisci
+```text
+http://localhost:8080/h2-console
+```
 
-Foldery:
+Parametry polaczenia:
 
-- `src/`
+```text
+JDBC URL: jdbc:h2:file:./data/hopsops
+User Name: sa
+Password:
+```
 
-Odpowiedzialnosc:
+## Swagger
 
-- kod aplikacji,
-- konfiguracja techniczna,
-- integracja funkcji.
+Dokumentacja API jest dostepna pod adresem:
 
-Jesli projekt zostanie podzielony na frontend i backend, mozna utworzyc `src/frontend/` oraz `src/backend/`.
+```text
+http://localhost:8080/swagger-ui/index.html
+```
 
-### Testerzy
+## Testy i requesty REST
 
-Foldery i pliki:
+Projekt zawiera test ladowania kontekstu Spring Boot oraz testy przypadkow
+uzycia transakcji sprzedazy i wypozyczenia. Katalog `testcase/` zawiera
+kolekcje requestow API w formacie OpenCollection/Bruno.
 
-- `tests/`
-- `docs/test-plan.md`
-- `docs/test-cases.md`
+Domyslne srodowisko kolekcji REST zaklada adres:
 
-Odpowiedzialnosc:
+```text
+http://localhost:8080/api
+```
 
-- plan testow,
-- przypadki testowe,
-- testowanie zmian,
-- zglaszanie bledow.
+Kolekcja obejmuje 23 requesty dla klientow, ofert sprzedazy, ofert wypozyczen
+i transakcji. Requesty zawieraja asercje statusow HTTP, a kroki tworzace dane
+zapisuja zwrocone identyfikatory do zmiennych Bruno (`customer_id`,
+`sales_offer_id`, `rental_offer_id`, `equipment_id`, `transaction_id`).
 
-## Zasady pracy w folderach
+Przy uruchomionym backendzie kolekcje mozna sprawdzic poleceniem:
 
-- Zmiany w cudzym obszarze warto uzgodnic w Pull Request albo Issue.
-- Dokumentacja analityczna powinna byc aktualizowana przed rozpoczeciem wiekszych zadan programistycznych.
-- Testy i przypadki testowe powinny byc dopisywane do funkcji, ktore trafiaja do `develop`.
+```bash
+cd testcase
+npx @usebruno/cli@latest run -r . --env hops-ops
+```

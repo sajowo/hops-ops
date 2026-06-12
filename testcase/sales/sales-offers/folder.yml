@@ -1,0 +1,7 @@
+info:
+  name: sales-offers
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
